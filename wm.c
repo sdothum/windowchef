@@ -1734,6 +1734,7 @@ set_borders(struct client *client, uint32_t color, uint32_t internal_color)
 {
 	if (client == NULL || conf.borders == false)
 		return;
+
 	uint32_t values[1];
 
 	color = get_color_pixel(color);
@@ -1814,7 +1815,7 @@ set_borders(struct client *client, uint32_t color, uint32_t internal_color)
 		};
 
 		xcb_pixmap_t pmap = xcb_generate_id(conn);
-		xcb_create_pixmap(conn, client->depth, pmap, scr->root,
+		xcb_create_pixmap(conn, 32, pmap, scr->root,
 			client->geom.width + (conf.border_width * 2),
 			client->geom.height + (conf.border_width * 2)
 		);

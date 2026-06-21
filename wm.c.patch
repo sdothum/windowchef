@@ -1,0 +1,29 @@
+diff --git a/wm.c b/wm.c
+--- a/wm.c
++++ b/wm.c
+@@
+ static uint32_t
+ get_color_pixel(uint32_t color)
+ {
+-    return color;
++    uint8_t a, r, g, b;
++
++    /* Support 0xRRGGBB and 0xAARRGGBB */
++    if (color <= 0xFFFFFF)
++        return color;
++
++    a = (color >> 24) & 0xFF;
++    r = (color >> 16) & 0xFF;
++    g = (color >> 8) & 0xFF;
++    b = color & 0xFF;
++
++    if (a == 255)
++        return (r << 16) | (g << 8) | b;
++
++    /* simple alpha over black */
++    r = (r * a) / 255;
++    g = (g * a) / 255;
++    b = (b * a) / 255;
++
++    return (r << 16) | (g << 8) | b;
+ }

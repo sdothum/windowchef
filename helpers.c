@@ -134,8 +134,5 @@ list_delete_all_items(struct list_item **list, bool can_free_data)
 uint32_t
 get_color_pixel(uint32_t color)
 {
-	if (color >> 24 == 0x00) {
-		color |= 0xff000000;
-	}
 	return color;
 }
