@@ -1,6 +1,15 @@
 Windowchef
 ==========
 
+FORK DIFFERENCES
+----------
+
+32bit #aarrggbb border color transparency (required picom compositor)
+window hiding (vs group hiding)
+window stack toggle (raise)
+waitron command chaining (dot)
+
+
 Disclaimer
 ----------
 
