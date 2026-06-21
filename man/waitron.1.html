@@ -79,7 +79,7 @@
 
 <h2 id="SYNOPSIS">SYNOPSIS</h2>
 
-<p><code>waitron</code> [-hv] <var>command</var> [<var>args</var>...]</p>
+<p><code>waitron</code> [-hv] <var>command</var> [<var>args</var>..] [ . <var>command</var> [<var>args</var>..] ]*</p>
 
 <h2 id="DESCRIPTION">DESCRIPTION</h2>
 
@@ -92,6 +92,7 @@ anything on <code>stdout</code>.</p>
 <dl>
 <dt class="flush"><code>-h</code></dt><dd><p>  Print usage.</p></dd>
 <dt class="flush"><code>-v</code></dt><dd><p>  Print version information.</p></dd>
+<dt><code>. (dot)</code> <var>command</var> [<var>args</var>..]</dt><dd><p>  Chain waitron command</p></dd>
 </dl>
 
 
@@ -152,6 +153,12 @@ anything on <code>stdout</code>.</p>
 <dt><code>window_focus_last</code></dt><dd><p>  Focus the window that was focused before the currently focused window.</p></dd>
 <dt><code>window_cardinal_focus</code> <var>DIRECTION</var></dt><dd><p>  Focus the closest window in a direction, relative to the currently
   focused window. Does nothing if there is no window focused.</p></dd>
+<dt><code>window_hide</code> <var>id</var></dt><dd><p>  Hide (unmap) window by <var>id</var>. The <var>id</var> can be found using <span class="man-ref">pfw<span class="s">(1)</span></span> or <span class="man-ref">lsw<span class="s">(1)</span></span> from
+  <a href="https://github.com/wmutils/core/">wmutils</a>.</p></dd>
+<dt><code>window_stack_toggle</code></dt><dd><p>  Set the window to either the top (viewable) or bottom of the stack depending on
+  where it is now. Does nothing if there is no window focused.</p>
+
+<p>  <strong>Note</strong>: The stack is comprised of the overlapping windows pinned by the current mouse position and are cycled first, by the active window (border), then by topmost order. Otherwise, it is just the active window area and may be toggled above or below its adjacent windows.</p></dd>
 <dt><code>group_add_window</code> <var>group_nr</var></dt><dd><p>  Add the focused window to the <var>group_nr</var> group.</p>
 
 <p>  Group numbers start from 0 and end at <var>GROUPS_NO</var> - 1.</p></dd>
@@ -256,7 +263,7 @@ are:</p>
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'>Windowchef</li>
-    <li class='tc'>April 2020</li>
+    <li class='tc'>June 2026</li>
     <li class='tr'>waitron(1)</li>
   </ol>
 

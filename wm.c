@@ -92,6 +92,7 @@ static struct client * setup_window(xcb_window_t);
 static void set_focused_no_raise(struct client *);
 static void set_focused(struct client *);
 static void set_focused_last_best();
+static void window_stack_toggle(struct client *);
 static void raise_window(xcb_window_t);
 static void close_window(struct client *);
 static void delete_window(xcb_window_t);
@@ -188,6 +189,8 @@ static void ipc_window_rev_cycle_in_group(uint32_t *);
 static void ipc_window_cardinal_focus(uint32_t *);
 static void ipc_window_focus(uint32_t *);
 static void ipc_window_focus_last(uint32_t *);
+static void ipc_window_stack_toggle(uint32_t *);
+static void ipc_window_hide(uint32_t *);
 static void ipc_group_add_window(uint32_t *);
 static void ipc_group_remove_window(uint32_t *);
 static void ipc_group_remove_all_windows(uint32_t *);
@@ -795,6 +798,17 @@ set_focused(struct client *client)
 }
 
 /*
+ * Hide (unmap) window.
+ */
+
+static void
+window_hide(struct client *client)
+{
+	xcb_unmap_window(conn, client->window);
+	xcb_flush(conn);
+}
+
+/*
  * Focus last best focus (in a valid group, mapped, etc)
  */
 
@@ -818,6 +832,19 @@ set_focused_last_best()
 
 		focused_item = focused_item->next;
 	}
+}
+
+/*
+ * Set window to the top or bottom of the window stack depending on where it is now.
+ */
+
+static void
+window_stack_toggle(struct client *client)
+{
+	uint32_t values[1] = { XCB_STACK_MODE_OPPOSITE };
+	// xcb_window_t win = client->window;
+	// xcb_configure_window(conn, win, XCB_CONFIG_WINDOW_STACK_MODE, values);
+	xcb_configure_window(conn, client->window, XCB_CONFIG_WINDOW_STACK_MODE, values);
 }
 
 /*
@@ -916,7 +943,7 @@ teleport_window(xcb_window_t win, int16_t x, int16_t y)
 static void
 move_window(xcb_window_t win, int16_t x, int16_t y)
 {
-	int16_t win_x, win_y;
+	int16_t win_x = 0, win_y = 0;
 	uint16_t win_w, win_h;
 
 	if (!is_mapped(win) || win == scr->root)
@@ -2817,6 +2844,8 @@ register_ipc_handlers(void)
 	ipc_handlers[IPCWindowCardinalFocus]   = ipc_window_cardinal_focus;
 	ipc_handlers[IPCWindowFocus]           = ipc_window_focus;
 	ipc_handlers[IPCWindowFocusLast]       = ipc_window_focus_last;
+	ipc_handlers[IPCWindowStackToggle]     = ipc_window_stack_toggle;
+	ipc_handlers[IPCWindowHide]            = ipc_window_hide;
 	ipc_handlers[IPCGroupAddWindow]        = ipc_group_add_window;
 	ipc_handlers[IPCGroupRemoveWindow]     = ipc_group_remove_window;
 	ipc_handlers[IPCGroupRemoveAllWindows] = ipc_group_remove_all_windows;
@@ -3166,11 +3195,30 @@ ipc_window_focus(uint32_t *d)
 }
 
 static void
+ipc_window_hide(uint32_t *d)
+{
+	struct client *client = find_client(&d[0]);
+
+	if (client != NULL)
+		window_hide(focused_win);
+}
+
+static void
 ipc_window_focus_last(uint32_t *d)
 {
 	(void)(d);
 	if (focused_win != NULL)
 		set_focused_last_best();
+}
+
+static void
+ipc_window_stack_toggle(uint32_t *d)
+{
+	(void)(d);
+	if (focused_win == NULL)
+		return;
+
+	window_stack_toggle(focused_win);
 }
 
 static void

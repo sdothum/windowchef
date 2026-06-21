@@ -24,3 +24,7 @@
 ## v0.5.2
 
 * Fixed uninstall makefile rule thanks to @xero
+
+## custom
+
+* add window_shuffle: raise/lower focused windows

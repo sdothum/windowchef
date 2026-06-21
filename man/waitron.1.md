@@ -3,7 +3,7 @@ waitron(1) -- A client for windowchef(1)
 
 ## SYNOPSIS
 
-`waitron` [-hv] <command> [<args>...]
+`waitron` [-hv] <command> [<args>..] [ . <command> [<args>..] ]*
 
 ## DESCRIPTION
 
@@ -18,6 +18,9 @@ anything on `stdout`.
 
 * `-v`:
 	Print version information.
+
+* `. (dot)` <command> [<args>..]:
+	Chain waitron command
 
 ## COMMON DEFINITIONS
 
@@ -124,6 +127,16 @@ anything on `stdout`.
 * `window_cardinal_focus` <DIRECTION>:
 	Focus the closest window in a direction, relative to the currently
 	focused window. Does nothing if there is no window focused.
+
+* `window_hide` <id>:
+	Hide (unmap) window by <id>. The <id> can be found using pfw(1) or lsw(1) from
+	[wmutils](https://github.com/wmutils/core/).
+
+* `window_stack_toggle`:
+	Set the window to either the top (viewable) or bottom of the stack depending on
+	where it is now. Does nothing if there is no window focused.
+
+	**Note**: The stack is comprised of the overlapping windows pinned by the current mouse position and are cycled first, by the active window (border), then by topmost order. Otherwise, it is just the active window area and may be toggled above or below its adjacent windows.
 
 * `group_add_window` <group_nr>:
 	Add the focused window to the <group_nr> group.
